@@ -45,7 +45,7 @@ with col2:
 	clear_all_btn= st.button(label="Clear All", on_click=clear_input, type="secondary")
 
 break_line()
-if input_text or submit_button:
+if submit_button:
 	with st.spinner('Processing...'):
 	        data = {"inputs": instructions[option]+ f"\"{input_text}\"", "wait_for_model": True, "parameters": {"do_sample": False, "max_new_tokens":250}}
 	        while True:            
