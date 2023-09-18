@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 API_URL = "https://api-inference.huggingface.co/models/grammarly/coedit-large"
-headers = {"Authorization": "Bearer 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"}
+headers = {"Authorization": st.secrets["auth_token"]}
 
 def query(payload):
 	response = requests.post(API_URL, headers=headers, json=payload)
