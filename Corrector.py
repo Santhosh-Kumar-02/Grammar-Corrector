@@ -3,6 +3,8 @@ import requests
 from PIL import Image
 import time
 
+st.set_page_config(page_title="Grammar Corrector", page_icon="favicon.png")
+
 API_URL = "https://api-inference.huggingface.co/models/grammarly/coedit-large"
 headers = {"Authorization": st.secrets["auth_token"]}
 
