@@ -6,10 +6,6 @@ import time
 API_URL = "https://api-inference.huggingface.co/models/grammarly/coedit-large"
 headers = {"Authorization": st.secrets["auth_token"]}
 
-def query(payload):
-	response = requests.post(API_URL, headers=headers, json=payload)
-	return response.json()
-
 def clear_input():
     st.session_state["input_text"] = ""
 
@@ -33,9 +29,9 @@ st.image(image)
 break_line()
 
 instructions = {
-	"Fix the grammar": "Please review the following paragraph and correct any grammatical errors you find. Make sure the sentences are clear and well-structured: ", 
-	"Paraphrase": "Please paraphrase the following paragraph while maintaining its original meaning: ",
-	"Summarize": "Please provide a concise summary of the main points and key ideas presented in the following paragraph:"}
+	"Fix the grammar": "Please correct the grammatical errors from the following paragraph: ", 
+	"Paraphrase": "Please paraphrase the following paragraph: ",
+	"Summarize": "Please briefly summarize the following paragraph: "}
 
 option = st.selectbox('Select Instruction:', options= list(instructions.keys()))
 input_text = st.text_area("Input:", key='input_text')
@@ -49,9 +45,10 @@ with col2:
 break_line()
 if input_text or submit_button:
 	with st.spinner('Processing...'):
-		time.sleep(2)
-		data = query({"inputs": instructions[option]+ f"\"{input_text}\""})
+		data = {"inputs": instructions[option]+ f"\"{input_text}\"", "wait_for_model": True, "parameters": {"do_sample": True, "max_new_tokens":250}}
+        	response = requests.post(API_URL, headers=headers, json=data)
+        	time.sleep(20)
 
 		st.markdown("""<p style="font-weight: 600; font-size: 20px;">Output</p>""", unsafe_allow_html=True)
 		st.markdown(f"""<div style="text-align: justify; color: black; font-weight: 550; line-height: 1.35; padding: 18px; border-radius: 0.5rem; background-color: #FFFFFF;">
-		{data[0]["generated_text"]}</div>""", unsafe_allow_html=True)
+		{response.json()[0]["generated_text"]}</div>""", unsafe_allow_html=True)
