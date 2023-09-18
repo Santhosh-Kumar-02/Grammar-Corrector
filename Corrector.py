@@ -34,7 +34,7 @@ instructions = {
 	"Summarize": "Please briefly summarize the following paragraph: "}
 
 option = st.selectbox('Select Instruction:', options= list(instructions.keys()))
-input_text = st.text_area("Input:", key='input_text')
+input_text = st.text_area("Input: (Max Characters = 1000)", max_chars=1000, key='input_text')
 
 col1, col2 = st.columns([2,15])
 with col1:
@@ -45,10 +45,12 @@ with col2:
 break_line()
 if input_text or submit_button:
 	with st.spinner('Processing...'):
-		data = {"inputs": instructions[option]+ f"\"{input_text}\"", "wait_for_model": True, "parameters": {"do_sample": True, "max_new_tokens":250}}
-        	response = requests.post(API_URL, headers=headers, json=data)
-        	time.sleep(20)
-
-		st.markdown("""<p style="font-weight: 600; font-size: 20px;">Output</p>""", unsafe_allow_html=True)
-		st.markdown(f"""<div style="text-align: justify; color: black; font-weight: 550; line-height: 1.35; padding: 18px; border-radius: 0.5rem; background-color: #FFFFFF;">
-		{response.json()[0]["generated_text"]}</div>""", unsafe_allow_html=True)
+	        data = {"inputs": instructions[option]+ f"\"{input_text}\"", "wait_for_model": True, "parameters": {"do_sample": False, "max_new_tokens":250}}
+	        while True:            
+	            response = requests.post(API_URL, headers=headers, json=data)
+	            if 'error' in response.json():
+	                time.sleep(15)
+	            elif 'generated_text' in response.json()[0]:
+	                st.markdown("""<p style="font-weight: 600; font-size: 20px;">Output</p>""", unsafe_allow_html=True)
+	                st.markdown(f"""<div style="text-align: justify; color: black; font-weight: 550; line-height: 1.35; padding: 18px; border-radius: 0.5rem; background-color: #FFFFFF;">{response.json()[0]["generated_text"]}</div>""", unsafe_allow_html=True)
+	                break
