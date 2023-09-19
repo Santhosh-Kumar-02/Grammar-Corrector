@@ -33,7 +33,7 @@ break_line()
 instructions = {
 	"Fix the grammar": "Please correct the grammatical errors from the following paragraph: ", 
 	"Paraphrase": "Please paraphrase the following paragraph: ",
-	"Summarize": "Please briefly summarize the following paragraph: "}
+	"Summarize": "Please summarize the following paragraph: "}
 
 option = st.selectbox('Select Instruction:', options= list(instructions.keys()))
 input_text = st.text_area("Input: (Max Characters = 1000)", max_chars=1000, key='input_text')
@@ -53,6 +53,6 @@ if submit_button:
 	            if 'error' in response.json():
 	                time.sleep(15)
 	            elif 'generated_text' in response.json()[0]:
-	                st.markdown("""<p style="font-weight: 600; font-size: 20px;">Output</p>""", unsafe_allow_html=True)
+	                st.markdown("""<p style="font-weight: 600; font-size: 20px;">Output: (Max tokens = 250)</p>""", unsafe_allow_html=True)
 	                st.markdown(f"""<div style="text-align: justify; color: black; font-weight: 550; line-height: 1.35; padding: 18px; border-radius: 0.5rem; background-color: #FFFFFF;">{response.json()[0]["generated_text"]}</div>""", unsafe_allow_html=True)
 	                break
